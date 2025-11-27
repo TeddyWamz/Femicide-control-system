@@ -1,0 +1,6 @@
+flask>=3.0.0
+transformers>=4.40.0
+torch
+psycopg[binary]>=3.1
+pandas>=2.3.0
+scikit-learn>=1.7.0

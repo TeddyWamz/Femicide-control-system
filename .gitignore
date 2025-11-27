@@ -1,0 +1,38 @@
+# Python artifacts
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg-info/
+*.egg
+*.log
+
+# Environments
+.venv/
+venv/
+.env
+.env.*
+
+# Model + large artifacts
+best_gbv_model/
+best_gbv_model.pth
+*.safetensors
+*.pt
+*.bin
+gbv_data/
+gbv_tokenizer/
+data/processed/
+
+# Data/cache files
+*.db
+*.sqlite
+*.sqlite3
+
+# IDE/editor
+.vscode/
+*.code-workspace
+
+# OS files
+.DS_Store
+Thumbs.db
