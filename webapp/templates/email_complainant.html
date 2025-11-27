@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block content %}
+  <section class="card">
+    <a href="{{ url_for('dashboard') }}">&larr; Back to dashboard</a>
+    <h2 style="margin-top:0.5rem;">Email complainant</h2>
+    <p>
+      <strong>Recipient:</strong> {{ report.complainant_name or 'Unknown' }} &middot;
+      <a href="mailto:{{ report.complainant_email }}">{{ report.complainant_email }}</a>
+    </p>
+    <p><strong>Original subject:</strong> {{ report.subject or 'Not provided' }}</p>
+    <p><strong>Filed:</strong> {{ report.created_at }}</p>
+    <p><strong>Predicted label:</strong> {{ report.predicted_label }}</p>
+
+    <form method="post">
+      <label for="subject">Email subject</label>
+      <input id="subject" type="text" name="subject" value="{{ subject }}" required />
+
+      <label for="message">Message</label>
+      <textarea id="message" name="message" rows="8" placeholder="Write your follow-up..." required>{{ message }}</textarea>
+      <p style="font-size:0.9rem;color:#6b6a7b;">
+        The following helpline footer will be appended automatically:
+        <br /><em>Your case has been recorded. If you experience any further danger or need immediate support, please contact these national helplines: 1195 (GBV hotline), 1190 (Counselling hotline), 1517 (UNHCR help line), 0800-720600 (Amani telecounselling), 0800-720-050 (legal services).</em>
+      </p>
+
+      <button type="submit">Send email</button>
+    </form>
+  </section>
+{% endblock %}
