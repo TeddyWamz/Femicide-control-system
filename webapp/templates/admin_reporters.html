@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% block content %}
+  <section class="card">
+    <h2>Manage reporters</h2>
+    <p>Add or deactivate vetted users. Each reporter receives an email-based login.</p>
+    <form method="post">
+      <div class="grid two">
+        <div>
+          <label>Full name</label>
+          <input type="text" name="full_name" required />
+        </div>
+        <div>
+          <label>Email</label>
+          <input type="email" name="email" required />
+        </div>
+      </div>
+      <div class="grid two">
+        <div>
+          <label>Phone</label>
+          <input type="text" name="phone" placeholder="+254..." />
+        </div>
+        <div>
+          <label>Temporary password</label>
+          <input type="password" name="password" required />
+        </div>
+      </div>
+      <label style="display:flex;align-items:center;gap:0.5rem;">
+        <input type="checkbox" name="active" checked />
+        Keep account active
+      </label>
+      <button type="submit" style="margin-top:1rem;">Add reporter</button>
+    </form>
+  </section>
+
+  <section class="card" style="margin-top:2rem;">
+    <h3>Registered reporters</h3>
+    {% if reporters %}
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Contact</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for rep in reporters %}
+            <tr>
+              <td>
+                <strong><a href="{{ url_for('admin_reporter_reports', reporter_id=rep.id) }}">{{ rep.full_name }}</a></strong><br />
+                <small>Added {{ rep.created_at }}</small>
+              </td>
+              <td>
+                {{ rep.email }}<br />
+                {% if rep.phone %}<small>{{ rep.phone }}</small>{% endif %}
+              </td>
+              <td>
+                {% if rep.active %}
+                  <span style="color:green;">Active</span>
+                {% else %}
+                  <span style="color:#999;">Inactive</span>
+                {% endif %}
+              </td>
+              <td>
+                <form method="post" action="{{ url_for('toggle_reporter_status', reporter_id=rep.id) }}">
+                  {% if rep.active %}
+                    <button name="action" value="deactivate" type="submit">Deactivate</button>
+                  {% else %}
+                    <button name="action" value="activate" type="submit">Activate</button>
+                  {% endif %}
+                </form>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p>No reporters invited yet.</p>
+    {% endif %}
+  </section>
+{% endblock %}
