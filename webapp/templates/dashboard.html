@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+{% block content %}
+  <section class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;">
+      <div>
+        <p style="margin:0;color:#a5a1c2;">Signed in as</p>
+        <h2 style="margin:0.2rem 0 0;">{{ reporter.full_name }}</h2>
+        <small>{{ reporter.email }}{% if reporter.phone %} · {{ reporter.phone }}{% endif %}</small>
+      </div>
+      <div>
+        <a class="btn" href="{{ url_for('logout') }}">Sign out</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="card" style="margin-top:2rem;">
+    <h3>File a new report</h3>
+    <form method="post">
+      <div class="grid two">
+        <div>
+          <label>Complainant name</label>
+          <input type="text" name="complainant_name" placeholder="Survivor / witness name" value="{{ request.form.complainant_name or '' }}" />
+        </div>
+        <div>
+          <label>Complainant phone</label>
+          <input type="text" name="complainant_phone" placeholder="+254 700000000" value="{{ request.form.complainant_phone or '' }}" />
+        </div>
+      </div>
+      <div class="grid two">
+        <div>
+          <label>Complainant email</label>
+          <input type="email" name="complainant_email" placeholder="if available" value="{{ request.form.complainant_email or '' }}" />
+        </div>
+        <div>
+          <label>Subject</label>
+          <input type="text" name="subject" placeholder="Short summary" value="{{ request.form.subject or '' }}" />
+        </div>
+      </div>
+      <div class="grid two">
+        <div>
+          <label>Address</label>
+          <input type="text" name="address" placeholder="Street / estate" value="{{ request.form.address or '' }}" />
+        </div>
+        <div>
+          <label>Area / county</label>
+          <input type="text" name="area" placeholder="County / ward / village" value="{{ request.form.area or '' }}" />
+        </div>
+      </div>
+      <label>Detailed narrative</label>
+      <textarea name="message" rows="6" placeholder="Describe the incident..." required>{{ request.form.message or '' }}</textarea>
+      <button type="submit">Submit & classify</button>
+    </form>
+
+    {% if prediction %}
+      <div style="margin-top:1.5rem;padding:1rem;border-radius:12px;background:#f5f3ff;">
+        <strong>Prediction:</strong> {{ prediction.label }}{% if prediction.subject %} · <em>{{ prediction.subject }}</em>{% endif %}
+        {% if prediction.counselor %}
+          <div style="margin-top:0.75rem;">
+            <strong>Suggested counselor:</strong> {{ prediction.counselor.full_name }} ({{ prediction.counselor.email }}{% if prediction.counselor.phone %} · {{ prediction.counselor.phone }}{% endif %})
+          </div>
+        {% endif %}
+      </div>
+    {% endif %}
+  </section>
+
+  {% if reports %}
+    <section class="card" style="margin-top:2rem;">
+      <h3>Your submitted reports</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Complainant</th>
+            <th>Location</th>
+            <th>Category</th>
+            <th>Counselor</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in reports %}
+            <tr>
+              <td>{{ row.created_at }}</td>
+              <td>
+                {{ row.complainant_name or '—' }}<br />
+                <small>{{ row.complainant_phone }}</small>
+              </td>
+              <td>{{ row.address or '—' }}{% if row.area %}<br /><small>{{ row.area }}</small>{% endif %}</td>
+              <td>{{ row.predicted_label }}</td>
+              <td>
+                {% if row.counselor_name %}
+                  {{ row.counselor_name }}<br />
+                  <small>{{ row.counselor_email }}</small>
+                {% else %}
+                  <small>Unassigned</small>
+                {% endif %}
+              </td>
+              <td>
+                {% if row.complainant_email %}
+                  <a href="{{ url_for('email_complainant', report_id=row.id) }}">Email</a>
+                {% else %}
+                  <small>No email</small>
+                {% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <div style="margin-top:1.5rem;padding:1rem;border-radius:12px;background:#f5f3ff;">
+        <h4 style="margin-top:0;">Verification status</h4>
+        <ul style="list-style:none;padding:0;margin:0;">
+          {% for row in reports %}
+            <li style="display:flex;align-items:center;justify-content:space-between;padding:0.45rem 0;border-bottom:1px solid #e0e7ff;">
+              <div>
+                <strong>{{ row.subject or row.predicted_label }}</strong><br />
+                <small>{{ row.created_at }}</small>
+              </div>
+              <div style="display:flex;align-items:center;gap:0.4rem;">
+                <span style="display:inline-block;width:14px;height:14px;border-radius:50%;border:2px solid #c084fc;background-color:{% if row.verified %}#6d28d9{% else %}transparent{% endif %};"></span>
+                <span style="font-weight:600;color:{% if row.verified %}#15803d{% else %}#b45309{% endif %};">
+                  {{ 'Verified' if row.verified else 'Pending review' }}
+                </span>
+              </div>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </section>
+  {% endif %}
+{% endblock %}

@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block content %}
+  <section class="card">
+    <h2>Contact & Support</h2>
+    <p>
+      Need help onboarding new field officers or troubleshooting the classifier? Reach our coordination desk using the channels below. We respond to verified partners within one business day.
+    </p>
+    <div class="grid two">
+      <div>
+        <h4>Email</h4>
+        <p><a href="mailto:support@femicidewatch.org">support@femicidewatch.org</a></p>
+        <h4>Phone / WhatsApp</h4>
+        <p>+254 700 000 000</p>
+        <h4>Office hours</h4>
+        <p>Monday–Friday · 09:00–18:00 (EAT)</p>
+      </div>
+      <div>
+        <h4>Send us a note</h4>
+        <form method="post" action="mailto:support@femicidewatch.org">
+          <label>Name</label>
+          <input type="text" name="name" placeholder="Your name" required />
+          <label>Email</label>
+          <input type="email" name="email" placeholder="you@example.com" required />
+          <label>Message</label>
+          <textarea name="message" rows="4" placeholder="How can we help?" required></textarea>
+          <button type="submit">Send message</button>
+        </form>
+      </div>
+    </div>
+  </section>
+{% endblock %}

@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% block content %}
+  <section class="card">
+    <h2>Add counselor</h2>
+    <form method="post" class="grid two">
+      <div>
+        <label for="full_name">Full name</label>
+        <input id="full_name" type="text" name="full_name" required placeholder="Jane Doe" />
+      </div>
+      <div>
+        <label for="email">Email</label>
+        <input id="email" type="email" name="email" required placeholder="jane@example.com" />
+      </div>
+      <div>
+        <label for="phone">Phone</label>
+        <input id="phone" type="text" name="phone" placeholder="+2547..." />
+      </div>
+      <div>
+        <label for="category">Violence category</label>
+        <select id="category" name="category" required>
+          <option value="">Select category</option>
+          {% for cat in categories %}
+            <option value="{{ cat }}">{{ cat }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div style="grid-column: span 2;">
+        <button type="submit">Add counselor</button>
+      </div>
+    </form>
+  </section>
+
+  <section class="card" style="margin-top:2rem;">
+    <h3>Registered counselors</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>Category</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in counselors %}
+          <tr>
+            <td>{{ row.full_name }}</td>
+            <td>{{ row.email }}</td>
+            <td>{{ row.phone or '—' }}</td>
+            <td>{{ row.category }}</td>
+            <td>{{ 'Active' if row.active else 'Inactive' }}</td>
+            <td>
+              <form method="post" action="{{ url_for('toggle_counselor', counselor_id=row.id) }}">
+                {% if row.active %}
+                  <input type="hidden" name="action" value="deactivate" />
+                  <button type="submit">Deactivate</button>
+                {% else %}
+                  <input type="hidden" name="action" value="activate" />
+                  <button type="submit">Activate</button>
+                {% endif %}
+              </form>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </section>
+{% endblock %}

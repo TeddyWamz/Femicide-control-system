@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% block content %}
+  <section class="card" style="background:#fff8f0;">
+    <h2 style="margin-bottom:1rem;">Metrics Dashboard</h2>
+    <div class="grid four">
+      <div style="background:#fef3c7;border-radius:16px;padding:1rem;">
+        <p style="margin:0;color:#a16207;text-transform:uppercase;font-size:0.8rem;">Total cases</p>
+        <h3 style="margin:0.2rem 0 0;font-size:2rem;">{{ metrics.total }}</h3>
+      </div>
+      <div style="background:#e0f2fe;border-radius:16px;padding:1rem;">
+        <p style="margin:0;color:#0c4a6e;text-transform:uppercase;font-size:0.8rem;">Verified</p>
+        <h3 style="margin:0.2rem 0 0;font-size:2rem;">{{ metrics.verified }}</h3>
+      </div>
+      <div style="background:#fee2e2;border-radius:16px;padding:1rem;">
+        <p style="margin:0;color:#b91c1c;text-transform:uppercase;font-size:0.8rem;">Pending review</p>
+        <h3 style="margin:0.2rem 0 0;font-size:2rem;">{{ metrics.pending }}</h3>
+      </div>
+      <div style="background:#ede9fe;border-radius:16px;padding:1rem;">
+        <p style="margin:0;color:#5b21b6;text-transform:uppercase;font-size:0.8rem;">Last 30 days</p>
+        <h3 style="margin:0.2rem 0 0;font-size:2rem;">{{ metrics.last_30 }}</h3>
+      </div>
+    </div>
+  </section>
+
+  {% set colors = ['#7c3aed', '#f97316', '#0ea5e9', '#10b981'] %}
+  <section class="grid two" style="margin-top:2rem;">
+    <div class="card">
+      <h3>Cases per category</h3>
+      {% set max_total = stats|map(attribute='total')|max %}
+      {% for row in stats %}
+        {% set width = (row.total / max_total * 100) if max_total else 0 %}
+        <div style="margin-bottom:0.8rem;">
+          <div style="display:flex;justify-content:space-between;font-weight:600;">
+            <span>{{ row.predicted_label }}</span>
+            <span>{{ row.total }}</span>
+          </div>
+          <div style="height:12px;border-radius:999px;background:#f3f4f6;">
+            <div style="height:12px;border-radius:999px;background:#7c3aed;width:{{ width }}%;"></div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+    <div class="card">
+      <h3>Cases by region</h3>
+      {% if area_counts %}
+        {% set area_order = ['Nairobi','Kisumu','Mombasa','Other'] %}
+        <div style="display:flex;align-items:flex-end;gap:1rem;height:220px;">
+          {% for area in area_order %}
+            {% set value = area_counts.get(area, 0) %}
+            <div style="text-align:center;">
+              <div style="width:40px;height:180px;border-radius:20px;background:#f3f4f6;display:flex;align-items:flex-end;justify-content:center;">
+                <div style="width:30px;border-radius:20px;background:#34d399;height:{{ (value / (max_area or 1)) * 170 }}px;"></div>
+              </div>
+              <strong style="display:block;margin-top:0.5rem;">{{ area }}</strong>
+              <small>{{ value }} cases</small>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p>No cases recorded yet.</p>
+      {% endif %}
+    </div>
+  </section>
+
+  <section class="grid two" style="margin-top:2rem;">
+    <div class="card">
+      <h3>Reporters</h3>
+      <ul style="list-style:none;padding:0;margin:0;">
+        {% for rep in reporters %}
+          <li style="padding:0.7rem 0;border-bottom:1px solid #eee;">
+            <strong>{{ rep.full_name }}</strong><br />
+            <small>{{ rep.email }}{% if rep.phone %} · {{ rep.phone }}{% endif %}</small>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Counselors</h3>
+      <ul style="list-style:none;padding:0;margin:0;">
+        {% for c in counselors %}
+          <li style="padding:0.7rem 0;border-bottom:1px solid #eee;">
+            <strong>{{ c.full_name }}</strong> · <small>{{ c.category }}</small><br />
+            <small>{{ c.email }}{% if c.phone %} · {{ c.phone }}{% endif %}</small>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </section>
+{% endblock %}

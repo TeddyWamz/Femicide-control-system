@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block content %}
+  <section class="card">
+    <h2>About Femicide Watch</h2>
+    <p>
+      Femicide Watch is a coordinated response platform that blends human-centered intake with multilingual AI triage. It was built for organizations that rely on trusted field officers to collect sensitive testimonies from survivors and witnesses.
+    </p>
+    <p>
+      By pairing a curated dataset with XLM-RoBERTa, the system predicts whether a narrative describes physical, sexual, emotional, or economic violence. These insights accelerate case prioritization and reveal hotspots that demand policy attention.
+    </p>
+    <div class="grid two">
+      <div>
+        <h4>Our commitments</h4>
+        <ul style="line-height:1.6;">
+          <li>Respect survivor privacy and agency.</li>
+          <li>Empower vetted responders, not anonymous submissions.</li>
+          <li>Provide actionable dashboards for decision-makers.</li>
+        </ul>
+      </div>
+      <div>
+        <h4>Technology stack</h4>
+        <ul style="line-height:1.6;">
+          <li>Flask backend with secure authentication.</li>
+          <li>XLM-RoBERTa fine-tuned on bilingual GBV narratives.</li>
+          <li>SQLite/PostgreSQL storage with auditable records.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+{% endblock %}
