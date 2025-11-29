@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block content %}
+  <section class="card">
+    <h2>Try the Femicide classifier</h2>
+    <p style="color:#5f5c73;margin-top:0.35rem;">
+      Provide your contact details and a short description of the incident. The demo will run the
+      GBV model immediately and surface the predicted category so you can verify how the classifier behaves.
+    </p>
+    <form method="post" novalidate>
+      <div class="grid two">
+        <div>
+          <label for="full_name">Your name</label>
+          <input id="full_name" type="text" name="full_name" placeholder="Jane Doe" value="{{ form_values.full_name }}" required />
+        </div>
+        <div>
+          <label for="phone">Phone number</label>
+          <input id="phone" type="tel" name="phone" placeholder="+254712000000" value="{{ form_values.phone }}" required />
+        </div>
+      </div>
+      <div class="grid two">
+        <div>
+          <label for="age_range">Age range</label>
+          <select id="age_range" name="age_range" required>
+            <option value="">Select age range</option>
+            {% for value, label in age_ranges %}
+              <option value="{{ value }}" {% if form_values.age_range == value %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+      <label for="message">Report description</label>
+      <textarea id="message" name="message" rows="6" placeholder="Describe what happened..." required>{{ form_values.message }}</textarea>
+      <button type="submit">Run prediction</button>
+    </form>
+  </section>
+
+  {% if prediction %}
+    <section class="card" style="margin-top:1.5rem;background:#f5f3ff;">
+      <h3>Model output</h3>
+      <p><strong>Reporter:</strong> {{ prediction.full_name }} ({{ prediction.phone }})</p>
+      <p><strong>Age range:</strong>
+        {% for value, label in age_ranges %}
+          {% if value == prediction.age_range %}
+            {{ label }}
+          {% endif %}
+        {% endfor %}
+      </p>
+      <p><strong>Predicted category:</strong> {{ prediction.label }}</p>
+      {% if prediction.counselor %}
+        <p><strong>Suggested counselor:</strong> {{ prediction.counselor.full_name }}{% if prediction.counselor.email %} ({{ prediction.counselor.email }}){% endif %}</p>
+      {% endif %}
+      <p style="margin-top:1rem;"><strong>Description:</strong><br />{{ prediction.message }}</p>
+    </section>
+  {% endif %}
+{% endblock %}
